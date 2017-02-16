@@ -1,0 +1,17 @@
+os:
+  - linux
+
+language: c
+
+python:
+  - "2.7"
+
+script:
+  - make
+  - echo '0123456789' > test-file
+  - export EXPECTED_WEIGHT=$(python -c 'print 9.2732796E-20 * 12')
+  - export EXPECTED="The file test-file weighs about $EXPECTED_WEIGHT grams."
+  - test [ \"$EXPECTED\" == \"$(./fileweight test-file)\" ]
+
+after_success:
+  - make clean
