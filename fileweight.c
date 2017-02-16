@@ -22,24 +22,16 @@
 #include <stdlib.h>
 #include <fcntl.h>
 #include <limits.h>
+
 #ifndef _WIN32
 #include <unistd.h>
-#include <sys/param.h> /* MAXPATHLEN */
 #else
 #include <io.h>        /* io.h does mostly replace unistd.h */
 #include <sys/types.h> /* off_t support */
-
-/* Windows does not have MAXPATHLEN. */
-#define MAXPATHLEN         256
-
-/* Nor does it have strlcpy(). */
-#define strlcpy(x, y, z) strncpy_s((x), (z), (y), _TRUNCATE)
 #endif
-
 
 #define ATOMS_PER_BIT      31750000
 #define MG_PER_IRON_ATOM   9.2732796E-20
-
 
 void show_syntax(char *argv[]) {
     /* Someone made a mistake. */
@@ -52,7 +44,7 @@ int main(int argc, char *argv[]) {
 #ifdef __OpenBSD__
     if (-1 == pledge("stdio rpath", NULL)) {
         /* Don't waste priviledges. */
-        return(EXIT_FAILURE);
+        return EXIT_FAILURE;
     }
 #endif
 
@@ -61,23 +53,21 @@ int main(int argc, char *argv[]) {
         return(EXIT_FAILURE);
     }
 
-    char inputfile[MAXPATHLEN];
-    off_t file_bytes;
-
-    strlcpy(inputfile, argv[1], sizeof(inputfile));
-    int fd_inputfile = open(inputfile, O_RDONLY);
+    int fd_inputfile = open(argv[1], O_RDONLY);
 
     if (!fd_inputfile) {
         /* Couldn't open the file. */
         show_syntax(argv);
-        return(EXIT_FAILURE);
+        return EXIT_FAILURE;
     }
 
-    file_bytes = lseek(fd_inputfile, 0, SEEK_END);
+    off_t file_bytes = lseek(fd_inputfile, 0, SEEK_END);
+
     close(fd_inputfile);
 
     long double weight = file_bytes * MG_PER_IRON_ATOM * ATOMS_PER_BIT / 1000 * CHAR_BIT;
-    printf("The file %s weighs about %e grams.\n\n", argv[1], weight);
 
-    return(EXIT_SUCCESS);
+    printf("The file %s weighs about %Le grams.\n\n", argv[1], weight);
+
+    return EXIT_SUCCESS;
 }

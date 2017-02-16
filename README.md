@@ -1,4 +1,4 @@
-# How much does a file weigh?
+# How much does a file weigh? ![build-status](https://api.travis-ci.org/burz/fileweight.svg?branch=master)
 
 Based on [IBM's research](http://gizmodo.com/5875674/ibm-figures-out-how-many-atoms-it-takes-to-hold-a-bit-hint-its-12), one bit takes between 1 and 62.5 million iron atoms on a normal hard disk. This application tries to estimate a medium weight for the input file, based on a value of `(62.5 + 1) / 2` = 31.75 million iron atoms per bit.
 
